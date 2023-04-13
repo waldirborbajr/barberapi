@@ -4,16 +4,15 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/waldirborbajr/barberapi/models"
+	"github.com/waldirborbajr/barberapi/controllers"
 )
 
-func Routes(router *gin.Engine) {
+func UserRoutes(router *gin.Engine) {
 	router.GET("/", welcome)
-	router.GET("/users", models.GetAllUsers)
-	router.POST("/user", models.CreateUser)
-	router.GET("/user/:userId", models.GetSingleUser)
-	router.PUT("/user/:userId", models.EditUser)
-	router.DELETE("/user/:userId", models.DeleteUser)
+	router.POST("/user", controllers.CreateUser())
+	router.GET("/user/:userId", controllers.GetAUser())
+	router.PUT("/user/:userId", controllers.EditAUser())
+	router.DELETE("/user/:userId", controllers.DeleteAUser())
 	router.NoRoute(notFound)
 }
 

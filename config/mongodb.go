@@ -3,23 +3,12 @@ package config
 import (
 	"context"
 	"log"
-	"os"
 	"time"
-
-	"github.com/joho/godotenv"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
-
-func EnvMongoURI() string {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("ERROR: loading config from .env file")
-	}
-
-	return os.Getenv("MONGOURI")
-}
 
 func ConnectDB() *mongo.Client {
 	// "mongodb://user:password@host:port/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
@@ -34,13 +23,23 @@ func ConnectDB() *mongo.Client {
 
 	defer cancel()
 
-	err = client.Ping(context.Background(), readpref.Primary())
+	err = client.Ping(ctx, readpref.Primary())
 
 	if err != nil {
-		log.Fatal("Could not connect to the database ", err)
+		log.Fatal("ERROR: Could not connect to the database ", err)
 	}
 
 	log.Println("Connected!")
 
 	return client
+}
+
+// Client instance
+var DB *mongo.Client = ConnectDB()
+
+// getting database collections
+func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
+	collection := client.Database("BarberSchedule").Collection(collectionName)
+
+	return collection
 }

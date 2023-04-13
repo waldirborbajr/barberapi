@@ -1,19 +1,21 @@
 package main
 
 import (
-	"net/http"
+	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/waldirborbajr/barberapi/config"
+	"github.com/waldirborbajr/barberapi/routes"
 )
 
 func init() {}
 
 func main() {
+	config.Connect()
+
 	router := gin.Default()
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "Barber Schedule up and running!!!"})
-	})
+	routes.Routes(router)
 
-	router.Run(":9090")
+	log.Fatal(router.Run(":9090"))
 }

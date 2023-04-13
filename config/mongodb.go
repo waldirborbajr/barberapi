@@ -11,7 +11,7 @@ import (
 )
 
 func Connect() {
-	clientOptions := options.Client().ApplyURI("mongo_url")
+	clientOptions := options.Client().ApplyURI("mongodb://user:password@host:port/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true")
 	client, err := mongo.NewClient(clientOptions)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

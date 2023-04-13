@@ -9,11 +9,11 @@ import (
 
 func Routes(router *gin.Engine) {
 	router.GET("/", welcome)
-	router.GET("/todos", models.GetAllUsers)
-	router.POST("/todo", models.CreateUser)
-	router.GET("/todo/:todoId", models.GetSingleUser)
-	router.PUT("/todo/:todoId", models.EditUser)
-	router.DELETE("/todo/:todoId", models.DeleteUser)
+	router.GET("/users", models.GetAllUsers)
+	router.POST("/user", models.CreateUser)
+	router.GET("/user/:userId", models.GetSingleUser)
+	router.PUT("/user/:userId", models.EditUser)
+	router.DELETE("/user/:userId", models.DeleteUser)
 	router.NoRoute(notFound)
 }
 

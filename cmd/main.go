@@ -6,12 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/waldirborbajr/barberapi/config"
 	"github.com/waldirborbajr/barberapi/routes"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func init() {}
 
 func main() {
-	config.Connect()
+	var DB *mongo.Client = config.ConnectDB()
 
 	router := gin.Default()
 

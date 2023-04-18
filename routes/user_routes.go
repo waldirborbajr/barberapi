@@ -4,15 +4,15 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/waldirborbajr/barberapi/controllers"
+	"github.com/waldirborbajr/barberapi/internal/domain/controller"
 )
 
 func UserRoutes(router *gin.Engine) {
 	router.GET("/", welcome)
-	router.POST("/user", controllers.CreateUser())
-	router.GET("/user/:userId", controllers.GetAUser())
-	router.PUT("/user/:userId", controllers.EditAUser())
-	router.DELETE("/user/:userId", controllers.DeleteAUser())
+	router.POST("/user", controller.CreateUser())
+	router.GET("/user/:userId", controller.GetAUser())
+	router.PUT("/user/:userId", controller.EditAUser())
+	router.DELETE("/user/:userId", controller.DeleteAUser())
 	router.NoRoute(notFound)
 }
 

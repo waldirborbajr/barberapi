@@ -7,9 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/waldirborbajr/barberapi/config"
-	"github.com/waldirborbajr/barberapi/internal/entity"
-	"github.com/waldirborbajr/barberapi/models"
+	"github.com/waldirborbajr/barberapi/internal/domain/entity"
+	"github.com/waldirborbajr/barberapi/internal/infra/db"
 	"github.com/waldirborbajr/barberapi/responses"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,7 +16,7 @@ import (
 )
 
 var (
-	userCollection *mongo.Collection = config.GetCollection(config.DB, "users")
+	userCollection *mongo.Collection = db.GetCollection(db.DB, "users")
 	validate                         = validator.New()
 )
 
@@ -39,7 +38,7 @@ func CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		newUser := models.User{
+		newUser := entity.User{
 			Id:       primitive.NewObjectID(),
 			Name:     user.Name,
 			Location: user.Location,
@@ -60,7 +59,7 @@ func GetAUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		userId := c.Param("userId")
-		var user models.User
+		var user entity.User
 		defer cancel()
 
 		objId, _ := primitive.ObjectIDFromHex(userId)
@@ -79,7 +78,7 @@ func EditAUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		userId := c.Param("userId")
-		var user models.User
+		var user entity.User
 		defer cancel()
 
 		objId, _ := primitive.ObjectIDFromHex(userId)
@@ -105,7 +104,7 @@ func EditAUser() gin.HandlerFunc {
 		}
 
 		// get updated user details
-		var updatedUser models.User
+		var updatedUser entity.User
 		if result.MatchedCount == 1 {
 			err := userCollection.FindOne(ctx, bson.M{"id": objId}).Decode(&updatedUser)
 			if err != nil {
@@ -148,7 +147,7 @@ func DeleteAUser() gin.HandlerFunc {
 func GetAllUsers() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		var users []models.User
+		var users []entity.User
 		defer cancel()
 
 		results, err := userCollection.Find(ctx, bson.M{})
@@ -160,7 +159,7 @@ func GetAllUsers() gin.HandlerFunc {
 		// reading from the db in an optimal way
 		defer results.Close(ctx)
 		for results.Next(ctx) {
-			var singleUser models.User
+			var singleUser entity.User
 			if err = results.Decode(&singleUser); err != nil {
 				c.JSON(http.StatusInternalServerError, responses.UserResponse{Status: http.StatusInternalServerError, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
 			}
